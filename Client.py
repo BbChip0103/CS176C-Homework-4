@@ -1,6 +1,6 @@
-from Tkinter import *
-import tkMessageBox
-import Image, ImageTk
+from tkinter import *
+import tkinter.messagebox as tkMessageBox
+from PIL import Image, ImageTk
 import socket, threading, sys, traceback, os
 
 from RtpPacket import RtpPacket
@@ -111,7 +111,7 @@ class Client:
                     rtpPacket.decode(data)
 
                     currFrameNbr = rtpPacket.seqNum()
-                    print "Current Seq Num: " + str(currFrameNbr)
+                    print ("Current Seq Num: " + str(currFrameNbr))
 
                     if currFrameNbr > self.frameNbr: # Discard the late packet
                         self.frameNbr = currFrameNbr
@@ -141,7 +141,7 @@ class Client:
         """Update the image file as video frame in the GUI."""
         photo = ImageTk.PhotoImage(Image.open(imageFile))
         self.label.configure(image = photo, height=288)
-	self.label.image = photo
+        self.label.image = photo
 
     def connectToServer(self):
         """Connect to the Server. Start a new RTSP/TCP session."""
@@ -217,9 +217,9 @@ class Client:
 
         # Send the RTSP request using rtspSocket.
         # ...
-        self.rtspSocket.send(request)
+        self.rtspSocket.send(request.encode())
 
-        print '\nData sent:\n' + request
+        print ('\nData sent:\n' + request)
 
     def recvRtspReply(self):
         """Receive RTSP reply from the server."""
@@ -237,7 +237,7 @@ class Client:
 
     def parseRtspReply(self, data):
         """Parse the RTSP reply from the server."""
-        lines = data.split('\n')
+        lines = data.decode().split('\n')
         seqNum = int(lines[1].split(' ')[1])
 
         # Process only if the server reply's sequence number is the same as the request's
